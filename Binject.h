@@ -29,9 +29,8 @@ class Binject
 
         /// @brief Build queue of Output objects from provided parameters.
         /// @param ptr  Array of pointers for arguments to be built.
-        /// @param end  Pointer to the last element to be built.
         /// @return False if an error occured, else return True.
-        bool build(char** ptr, const char* const end);
+        bool build(char** ptr);
 
         Binject(const Binject& orig); ///< = delete
         Binject& operator=(const Binject& orig); ///< = delete

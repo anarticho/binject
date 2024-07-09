@@ -17,7 +17,7 @@ struct Output
 };
 
 inline Output::Output():
-    nb(0),
+    nb(1),
     str()
 {
 }

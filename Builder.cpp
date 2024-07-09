@@ -3,8 +3,7 @@
 Builder::Builder(Outputs& outputs):
     out_obj(),
     out_q(outputs),
-    ptr(0),
-    end(0)
+    ptr_arg(0)
 {
     func_map["-s"] = std::bind(&Builder::get_s, this);
     func_map["-ns"] = std::bind(&Builder::get_ns, this);
@@ -14,13 +13,21 @@ Builder::Builder(Outputs& outputs):
 
 bool Builder::step()
 {
-    const bool ret = ptr                        // verify init call
-                && (*ptr < end)                 // verify pending element
-                && (func_map.count(*ptr) != 0)  // verify flag within map
-                && func_map.at(*ptr++)();       // execute function (and increment pointer)
+    const bool ret = ptr_arg                        // verify both init function called and overflowing argv array.
+                && (func_map.count(**ptr_arg) != 0) // verify flag within map
+                && func_map.at(**ptr_arg)();  // execute function (and increment pointer)
     if(ret)
     {
         out_q.push(out_obj);
+        out_obj.nb = 1;
+    }
+    else
+    {
+        ptr_arg = 0;
+        while(!out_q.empty())
+        {
+            out_q.pop();
+        };
     }
     return ret;
 }
@@ -30,22 +37,24 @@ bool Builder::get_n()
     bool ret = true;
     try
     {
-        out_obj.nb = std::stoi(*ptr);
+        out_obj.nb = std::stoi(**ptr_arg);
     }
     catch(const std::exception& e)
     {
         ret = false;
     }
-    ptr++;
-    return ret;
+    char* next_arg = *((*ptr_arg)+1);
+    const bool next_ok = (next_arg!=0) && (next_arg[0]!='-');
+    return ret && next_ok;
 }
 
 bool Builder::get_x()
 {
+    (*ptr_arg)++;
     static std::string patrn = "[A-F0-9]+"; // only digits and uppercase A to F
     static const size_t hex_sz = 2;
 
-    std::string str(*ptr);                // increment pointer
+    std::string str(**ptr_arg);             // increment pointer
     const size_t str_sz = str.length();
     
     bool ret = ((str_sz%hex_sz) == 0)       // even size
@@ -66,14 +75,14 @@ bool Builder::get_x()
             }
         }
     }
-    ptr++;
+    ++(*ptr_arg);
     return ret;
 }
 
 bool Builder::get_s()
 {
-    out_obj.nb = 1;
-    out_obj.str = *ptr;
-    ptr++;
+    (*ptr_arg)++;
+    out_obj.str = **ptr_arg;
+    (*ptr_arg)++;
     return true;
 }

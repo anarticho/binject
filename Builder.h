@@ -15,9 +15,8 @@ class Builder
         explicit Builder(Outputs& outputs);
 
         /// @brief Initialize pointer for arguments both with pointer for last element.
-        /// @param ptr0 Pointer for arguments.
-        /// @param end0 Pointer to the last element.
-        void init(char** ptr0, const char* const end0);
+        /// @param ptr0 Pointer to the pointer for arguments.
+        void init(char*** ptr0);
 
         /// @brief Iterate through internal FSM.
         /// @return False if an error occured, else return True.
@@ -27,8 +26,7 @@ class Builder
         Output out_obj;     ///< Output object, as cache.
         Outputs& out_q;     ///< Queue of Output objects.
 
-        char** ptr;         ///< Array arguments.
-        const char* end;    ///< Pointer to the last argument.
+        char*** ptr_arg;    ///< Pointer to the pointer of arguments.
 
         std::map<std::string, std::function<bool ()> > func_map; ///< Map of functions to process arguments.
 
@@ -56,19 +54,20 @@ class Builder
         Builder& operator=(const Builder& orig); ///< = delete
 };
 
-inline void Builder::init(char** ptr0, const char* const end0)
+inline void Builder::init(char*** ptr0)
 {
-    ptr = ptr0;
-    end = end0;
+    ptr_arg = ptr0;
 }
 
 inline bool Builder::get_nx()
 {
+    (*ptr_arg)++;
     return get_n() && get_x();
 }
 
 inline bool Builder::get_ns()
 {
+    (*ptr_arg)++;
     return get_n() && get_s();
 }
 
