@@ -37,7 +37,9 @@ bool Builder::get_n()
     bool ret = true;
     try
     {
-        out_obj.nb = std::stoi(**ptr_arg);
+        const int tmp = std::stoi(**ptr_arg);
+        ret = (tmp <= UINT16_MAX);
+        out_obj.nb = tmp;
     }
     catch(const std::exception& e)
     {
