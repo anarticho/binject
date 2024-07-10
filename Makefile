@@ -1,31 +1,33 @@
-# Makefile
-
 # Compiler
 CXX = g++
 
 # Compiler flags
 CXXFLAGS = -Wall -g
 
-# Target executable
-TARGET = binject
-
 # Source files
 SRCS = main.cpp Binject.cpp Builder.cpp Output.cpp
 
-# Object files
-OBJS = $(SRCS:.cpp=.o)
+# Object files (located in the build directory)
+OBJS = $(SRCS:%.cpp=build/%.o)
 
-# Default target
-all: $(TARGET)
+# Executable name (located in the build directory)
+EXEC = build/binject
 
-# Linking
-$(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o $(TARGET)
+# Default rule
+all: $(EXEC)
 
-# Compilation
-%.o: %.cpp
+# Rule to link the executable
+$(EXEC): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# Rule to create the build directory if it doesn't exist
+build/%.o: %.cpp | build
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Clean up
+# Rule to create the build directory
+build:
+	mkdir -p build
+
+# Clean rule to remove all generated files
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf build
