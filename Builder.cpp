@@ -9,8 +9,8 @@ Builder::Builder(Outputs& outputs):
     func_map["-ns"] = std::bind(&Builder::get_ns, this);
     func_map["-x"] = std::bind(&Builder::get_x, this);
     func_map["-nx"] = std::bind(&Builder::get_nx, this);
-    func_map["-u64"] = std::bind(&Builder::get_u64, this);
-    func_map["-nu64"] = std::bind(&Builder::get_nu64, this);
+    func_map["-x64"] = std::bind(&Builder::get_x64, this);
+    func_map["-nx64"] = std::bind(&Builder::get_nx64, this);
 }
 
 bool Builder::step()
@@ -91,13 +91,18 @@ bool Builder::get_s()
     return true;
 }
 
-bool Builder::get_u64()
+bool Builder::get_x64()
 {
     static const uint8_t u64_sz8 = 8;   // 64-bits unsigned integer length in bytes.  
-    const bool ret = Builder::get_x() && (out_obj.str.length() == u64_sz8);
+    const uint16_t str_sz8 = out_obj.str.length();
+    const bool ret = Builder::get_x() && (str_sz8 <= u64_sz8);
     if(ret)
     {
         std::reverse(out_obj.str.begin(), out_obj.str.end());
+        while(out_obj.str.length() != u64_sz8)
+        {
+            out_obj.str += '\0';
+        }
     }
     return ret;     
 }
