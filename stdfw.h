@@ -1,3 +1,7 @@
+#ifndef STDFW_H_
+#define STDFW_H_
+
+#include <algorithm> // for std::reverse
 #include <cstdint>      // for native types (uint8_t)
 #include <functional>   // for std::function
 #include <iostream>     // for std::iostream
@@ -5,3 +9,5 @@
 #include <queue>        // for std::queue
 #include <regex>        // for std::regex_match
 #include <string>       // for std::stoi (and std::string obviously)
+
+#endif

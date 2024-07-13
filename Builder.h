@@ -50,6 +50,14 @@ class Builder
         /// @return True.
         bool get_s();
 
+        /// @brief Check, parse and store -u64 argument within Output object.
+        /// @return False if format is invalid, else return True.
+        bool get_u64();
+
+        /// @brief Check, parse and store -nu64 argument within Output object.
+        /// @return False if format is invalid, else return True.
+        bool get_nu64();
+
         Builder(const Builder& orig); ///< = delete
         Builder& operator=(const Builder& orig); ///< = delete
 };
@@ -69,6 +77,12 @@ inline bool Builder::get_ns()
 {
     (*ptr_arg)++;
     return get_n() && get_s();
+}
+
+inline bool Builder::get_nu64()
+{
+    (*ptr_arg)++;
+    return get_n() && get_u64();
 }
 
 #endif
