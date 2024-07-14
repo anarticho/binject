@@ -16,7 +16,9 @@ Assuming it exist a bin folder within user space (~/bin) to contains executables
 - [data] an ASCII string to be interpreted from provided flag.
     
 Flag determine the way [data] will be outputed as:
-- 'of' as output file name to write on. 
+- 'of' as output file name to write on:
+    - shall contains ".bin" extension. 
+    - overwritten if already exists.
 - 's' as ASCII string.
 - 'x' as hexadecimal string:
     - input as ASCII.
@@ -27,6 +29,8 @@ Flag determine the way [data] will be outputed as:
     - hexadeciaml format.
     - padding. 
     - output little-endian (LSB first).
+- 'if' as input file name to read from:
+    - shall contains ".bin" extension.
 
 Additionaly, [num] can be appended between [-flag] and [data] to repeat the output. It shall be a strictly positive integer.
 

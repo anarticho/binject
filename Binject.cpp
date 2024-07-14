@@ -12,19 +12,14 @@ Binject::Binject(int argc, char* argv[]):
 bool Binject::init(char*** start)
 {
     const std::string of_str = "-of";
-    const std::string bin_str = ".bin";
-    const size_t ext_sz = bin_str.length();
     char** arg_ptr = *start;
 
-    const bool is_of = (of_str.compare(*arg_ptr++) == 0);
-    const size_t arg_sz = std::strlen(*arg_ptr);
-    bool ret = is_of 
-               && (std::strlen(*arg_ptr) >= ext_sz)
-               && (bin_str.compare((*arg_ptr)+arg_sz-ext_sz) == 0);
+    const bool is_of = (of_str.compare(*arg_ptr++) == 0);   // is of flag
+    bool ret = is_of && Builder::check_fext(*arg_ptr);      // file name OK
     if(ret)
     {
-        outfile = *arg_ptr++;
-        *start = arg_ptr;
+        outfile = *arg_ptr++;   // store file name
+        *start = arg_ptr;       // change first argument pointer
     }
 
     return (!is_of) || ret;
@@ -45,7 +40,7 @@ bool Binject::build(char** start)
     return ret;
 }
 
-bool Binject::to_file(std::ofstream& ofstr)
+bool Binject::get_ostr(std::ofstream& ofstr)
 {
     bool is_file = !outfile.empty();
     if(is_file)
@@ -64,16 +59,13 @@ void Binject::step()
 {
     std::streambuf* shrbuf = std::cout.rdbuf();
     std::ofstream ofstr;
-    const bool is_file = to_file(ofstr);
-    while(!outputs.empty())
+    const bool out_ok = get_ostr(ofstr);
+    while(out_ok && !outputs.empty())
     {
         Output out = outputs.front();
         out.process();
         outputs.pop();
     };
-    if(is_file)
-    {
-        std::cout.rdbuf(shrbuf);
-        ofstr.close();
-    }
+    std::cout.rdbuf(shrbuf);
+    ofstr.close();
 }

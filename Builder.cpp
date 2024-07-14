@@ -1,5 +1,15 @@
 #include "Builder.h"
 
+bool Builder::check_fext(const char* str)
+{
+    const std::string bin_str = ".bin";
+
+    const size_t ext_sz = bin_str.length();
+    const size_t arg_sz = std::strlen(str);
+
+    return (arg_sz >= ext_sz) && (bin_str.compare(str+arg_sz-ext_sz) == 0);
+}
+
 Builder::Builder(Outputs& outputs):
     out_obj(),
     out_q(outputs),
@@ -11,6 +21,7 @@ Builder::Builder(Outputs& outputs):
     func_map["-nx"] = std::bind(&Builder::get_nx, this);
     func_map["-x64"] = std::bind(&Builder::get_x64, this);
     func_map["-nx64"] = std::bind(&Builder::get_nx64, this);
+    func_map["-if"] = std::bind(&Builder::get_if, this);
 }
 
 bool Builder::step()
@@ -95,7 +106,7 @@ bool Builder::get_x64()
 {
     static const uint8_t u64_sz8 = 8;   // 64-bits unsigned integer length in bytes.  
     const uint16_t str_sz8 = out_obj.str.length();
-    const bool ret = Builder::get_x() && (str_sz8 <= u64_sz8);
+    const bool ret = Builder::get_x() && (str_sz8 <= u64_sz8);  // increment ptr_arg
     if(ret)
     {
         std::reverse(out_obj.str.begin(), out_obj.str.end());
@@ -105,4 +116,22 @@ bool Builder::get_x64()
         }
     }
     return ret;     
+}
+
+bool Builder::get_if()
+{
+    (*ptr_arg)++;
+    std::ifstream ifstr;
+    const bool ret = check_fext(**ptr_arg)
+                 && (ifstr.open(**ptr_arg, std::ifstream::binary), true) 
+                 && ifstr.is_open();
+    if(ret)
+    {
+        std::ostringstream tmp;
+        tmp << ifstr.rdbuf();
+        out_obj.str = tmp.str();
+    }
+    ifstr.close();
+    (*ptr_arg)++;
+    return ret;
 }

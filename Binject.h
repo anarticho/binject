@@ -23,14 +23,14 @@ class Binject
             st_str,     ///< Just parse 
         };
 
-        Builder::Outputs outputs;       ///< Queue to store Output objects to be processed on step.
-        Builder          builder;       ///< Object to build queue of Output to be processed.
+        Builder::Outputs outputs;   ///< Queue to store Output objects to be processed on step.
+        Builder          builder;   ///< Object to build queue of Output to be processed.
         std::string      outfile;   ///< File for to redirect output content (optionnal, zero-length at build-time).
 
         /// @brief Check for output file to redirect parsed flags on it.
         /// @param ofstr    Output file stream.
         /// @return False if file was opened and correctly redirected, else return True.
-        bool to_file(std::ofstream& ofstr);
+        bool get_ostr(std::ofstream& ofstr);
 
         /// @brief Initialize output file if -of flag is detected in a valid format.
         /// @param start    Pointer to the array of null terminated strings for arguments to be built.

@@ -22,6 +22,11 @@ class Builder
         /// @return False if an error occured, else return True.
         bool step();
 
+        /// @brief Check extension for files.
+        /// @param str  String to check.
+        /// @return True if extension is ".bin", else return False.
+        static bool check_fext(const char* str);
+
     private:
         Output out_obj;     ///< Output object, as cache.
         Outputs& out_q;     ///< Queue of Output objects.
@@ -57,6 +62,10 @@ class Builder
         /// @brief Check, parse and store -nx64 argument within Output object.
         /// @return False if format is invalid, else return True.
         bool get_nx64();
+
+        /// @brief Check, parse and store -if argument within Output object.
+        /// @return False if format is invalid (or if file do not exist), else return True.
+        bool get_if();
 
         Builder(const Builder& orig); ///< = delete
         Builder& operator=(const Builder& orig); ///< = delete
