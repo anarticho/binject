@@ -3,7 +3,9 @@
 
 #include <algorithm> // for std::reverse
 #include <cstdint>      // for native types (uint8_t)
+#include <cstring>      // for std::strlen
 #include <functional>   // for std::function
+#include <fstream>      // for std::fstream
 #include <iostream>     // for std::iostream
 #include <map>          // for std::map
 #include <queue>        // for std::queue

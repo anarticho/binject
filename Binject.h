@@ -12,9 +12,8 @@ class Binject
         /// @param argv     Array of arguments (from main entry point).
         explicit Binject(int argc, char* argv[]);
 
-        /// @brief Process Output from queue.
-        /// @return True if there is still content on the queue, else return False.
-        bool step();
+        /// @brief Process all the Output objects from queue.
+        void step();
 
     private:
         enum Build_state    ///< States to parse arguments.
@@ -24,11 +23,22 @@ class Binject
             st_str,     ///< Just parse 
         };
 
-        Builder::Outputs outputs;   ///< Queue to store Output objects to be processed on step.
-        Builder builder;            ///< Object to build queue of Output to be processed.
+        Builder::Outputs outputs;       ///< Queue to store Output objects to be processed on step.
+        Builder          builder;       ///< Object to build queue of Output to be processed.
+        std::string      outfile;   ///< File for to redirect output content (optionnal, zero-length at build-time).
+
+        /// @brief Check for output file to redirect parsed flags on it.
+        /// @param ofstr    Output file stream.
+        /// @return False if file was opened and correctly redirected, else return True.
+        bool to_file(std::ofstream& ofstr);
+
+        /// @brief Initialize output file if -of flag is detected in a valid format.
+        /// @param start    Pointer to the array of null terminated strings for arguments to be built.
+        /// @return True if -of flag is correct, or if it was not detected, else return false.
+        bool init(char*** start);
 
         /// @brief Build queue of Output objects from provided parameters.
-        /// @param ptr  Array of pointers for arguments to be built.
+        /// @param ptr  Array of null terminated strings to be built.
         /// @return False if an error occured, else return True.
         bool build(char** ptr);
 

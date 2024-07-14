@@ -16,6 +16,7 @@ Assuming it exist a bin folder within user space (~/bin) to contains executables
 - [data] an ASCII string to be interpreted from provided flag.
     
 Flag determine the way [data] will be outputed as:
+- 'of' as output file name to write on. 
 - 's' as ASCII string.
 - 'x' as hexadecimal string:
     - input as ASCII.
