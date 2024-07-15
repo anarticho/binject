@@ -104,9 +104,9 @@ bool Builder::get_s()
 
 bool Builder::get_x64()
 {
-    static const uint8_t u64_sz8 = 8;   // 64-bits unsigned integer length in bytes.  
-    const uint16_t str_sz8 = out_obj.str.length();
-    const bool ret = Builder::get_x() && (str_sz8 <= u64_sz8);  // increment ptr_arg
+    static const uint8_t u64_sz8 = 8;           // 64-bits unsigned integer length in bytes.  
+    const bool ret = Builder::get_x()           // increment ptr_arg
+                     && (out_obj.str.length() <= u64_sz8);
     if(ret)
     {
         std::reverse(out_obj.str.begin(), out_obj.str.end());
