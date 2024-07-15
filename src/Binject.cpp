@@ -42,17 +42,18 @@ bool Binject::build(char** start)
 
 bool Binject::get_ostr(std::ofstream& ofstr)
 {
-    bool is_file = !outfile.empty();
+    const bool is_file = !outfile.empty();
+    bool is_ok = false;
     if(is_file)
     { 
         ofstr.open(outfile, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
-        is_file = ofstr.is_open() && (std::cout.rdbuf(ofstr.rdbuf()), true);
+        is_ok = ofstr.is_open() && (std::cout.rdbuf(ofstr.rdbuf()), true);
         while(!is_file && !outputs.empty())
         {
             outputs.pop();
         };
     }
-    return is_file;
+    return !is_file || is_ok;
 }
 
 void Binject::step()

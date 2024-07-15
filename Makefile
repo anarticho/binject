@@ -2,32 +2,55 @@
 CXX = g++
 
 # Compiler flags
-CXXFLAGS = -Wall -g
+CXXFLAGS = -Wall -g -Iinc
 
-# Source files
-SRCS = main.cpp Binject.cpp Builder.cpp Output.cpp
+# Source and header files
+SRC_DIR = src
+INC_DIR = inc
+BUILD_DIR = build
+TST_DIR = tst
 
-# Object files (located in the build directory)
-OBJS = $(SRCS:%.cpp=build/%.o)
+# Sources and objects
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
-# Executable name (located in the build directory)
-EXEC = build/binject
+# Executable
+TARGET = $(BUILD_DIR)/binject
 
+# Rule to build object files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
+	@echo "[*] Building $(@F) assembly..."
+	@mkdir -p $(BUILD_DIR)
+	@-$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+# Rule to build the target executable
+$(TARGET): $(OBJS)
+	@echo "[*] Generating $(@F) executable..."
+	@-$(CXX) $(CXXFLAGS) -o $@ $^
+	@echo "[*] Verifying functionnality..."
+	@$(TST_DIR)/tst.sh
+	
 # Default rule
-all: $(EXEC)
+all:
+	$(TARGET)
 
-# Rule to link the executable
-$(EXEC): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+# Test target
+test:
+	@$(TST_DIR)/tst.sh
 
-# Rule to create the build directory if it doesn't exist
-build/%.o: %.cpp | build
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Phony targets
+.PHONY: clean to_bin
 
-# Rule to create the build directory
-build:
-	mkdir -p build
+# Copy built target with bin directory
+to_bin:
+	@cp $(BUILD_DIR)/binject ~/bin/binject
+	@echo "[*] Copy built target within binary directory"
 
-# Clean rule to remove all generated files
+# Clean build directory
 clean:
-	rm -rf build
+	@-rm -rf $(BUILD_DIR)
+	@echo "[*] Removed build directory"
+
+# Ensure build directory exists
+$(BUILD_DIR):
+	@-mkdir -p $(BUILD_DIR)
