@@ -28,7 +28,7 @@ bool Builder::step()
 {
     const bool ret = ptr_arg                        // verify both init function called and overflowing argv array.
                 && (func_map.count(**ptr_arg) != 0) // verify flag within map
-                && func_map.at(**ptr_arg)();  // execute function (and increment pointer)
+                && func_map.at(**ptr_arg)();        // execute function (and increment pointer)
     if(ret)
     {
         out_q.push(out_obj);

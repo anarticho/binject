@@ -33,7 +33,8 @@ class Builder
 
         char*** ptr_arg;    ///< Pointer to the pointer of arguments.
 
-        std::map<std::string, std::function<bool ()> > func_map; ///< Map of functions to process arguments.
+        /// Map of functions to process arguments.
+        std::map<std::string, std::function<bool ()> > func_map;
 
         /// @brief Check, parse and store ASCII string for number of occurences (in case of -n flag).
         /// @return False if format is invalid, else return True.
