@@ -1,12 +1,23 @@
 #include "Badject.h"
 
-void Badject::gen_output()
+void Badject::gen_xvl()
 {
-    std::cout << "[*] xvl.bin containing computed XOR value." << std::endl;
-    std::ofstream xvl("xvl.bin", File::wr_mode);
-    xvl.write(reinterpret_cast<const char*>(&cpxor), sizeof(cpxor));
-    xvl.close();
+    static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
+    std::string xvl_str;
+    xvl_str += cpxor;
+    while(xvl_str.length() != u64_sz8)                  // fill out_obj with 0 for padding
+    {
+        xvl_str += '\0';
+    }
 
+    std::ofstream xvl("xvl.bin", File::wr_mode);
+    xvl.write(xvl_str.c_str(), xvl_str.size());
+    xvl.close();
+    std::cout << "[*] xvl.bin containing computed XOR value." << std::endl;
+}
+
+void Badject::gen_esc()
+{
     std::cout << "[*] Offset for detected bad characters:" << std::endl;
     std::string str_bin;
     const size_t str_sz = parms.mods.size();
@@ -27,6 +38,12 @@ void Badject::gen_output()
     esc.close();
 
     std::cout << "[*] esc.bin containing XORed argument." << std::endl;
+}
+
+void Badject::gen_output()
+{
+    gen_xvl();  // generate xvl.bin as for XOR value as x64 format.
+    gen_esc();  // generate esc.bin as for escaped bad characters.
 }
 
 bool Badject::compute_xor()

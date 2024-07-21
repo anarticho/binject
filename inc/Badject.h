@@ -22,7 +22,10 @@ class Badject
         explicit Badject(Params params);
         bool compute_xor();
         bool compute_str();
+
         void gen_output();
+        void gen_xvl();
+        void gen_esc();
 
         Badject(const Badject& orig); ///< = delete
         Badject& operator=(const Badject& orig); ///< = delete
