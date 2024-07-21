@@ -36,8 +36,8 @@ Builder::Builder():
     func_map["-ns"] = std::bind(&Builder::get_ns, this);
     func_map["-x"] = std::bind(&Builder::get_x, this);
     func_map["-nx"] = std::bind(&Builder::get_nx, this);
-    func_map["-x64"] = std::bind(&Builder::get_x64, this);
-    func_map["-nx64"] = std::bind(&Builder::get_nx64, this);
+    func_map["-a"] = std::bind(&Builder::get_a, this);
+    func_map["-na"] = std::bind(&Builder::get_na, this);
     func_map["-if"] = std::bind(&Builder::get_if, this);
 }
 
@@ -119,7 +119,7 @@ bool Builder::get_s()
     return true;
 }
 
-bool Builder::get_x64()
+bool Builder::get_a()
 {
     static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
     const bool ret = Builder::get_x()                           // ::get_x increment ptr_arg

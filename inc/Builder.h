@@ -62,13 +62,13 @@ class Builder
         /// @return True.
         bool get_s();
 
-        /// @brief Check, parse and store -x64 argument within Output object.
+        /// @brief Check, parse and store -a argument within Output object.
         /// @return False if format is invalid, else return True.
-        bool get_x64();
+        bool get_a();
 
-        /// @brief Check, parse and store -nx64 argument within Output object.
+        /// @brief Check, parse and store -na argument within Output object.
         /// @return False if format is invalid, else return True.
-        bool get_nx64();
+        bool get_na();
 
         /// @brief Check, parse and store -if argument within Output object.
         /// @return False if format is invalid (or if file do not exist), else return True.
@@ -95,10 +95,10 @@ inline bool Builder::get_ns()
     return get_n() && get_s();
 }
 
-inline bool Builder::get_nx64()
+inline bool Builder::get_na()
 {
     (*ptr_arg)++;
-    return get_n() && get_x64();
+    return get_n() && get_a();
 }
 
 #endif
