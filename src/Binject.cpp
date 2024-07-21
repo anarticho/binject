@@ -37,22 +37,25 @@ bool Binject::build(char** start)
 
 bool Binject::get_bd(char*** ptr_arg)
 {
+    (*ptr_arg)++;   // get next argument (from flag to data)
     Output bad_bin, str_bin;
-    const bool ret = Getter::get_if0(*(++(*ptr_arg)), bad_bin) 
-                  && Getter::get_if0(*((*ptr_arg)+1), str_bin)
-                  && Badject::build(bad_bin.str, str_bin.str);
-    *ptr_arg += ret;
+    const bool ret = Getter::get_if0(*(*ptr_arg), bad_bin)      // load file containing bad characters
+                  && Getter::get_if0(*((*ptr_arg)+1), str_bin)  // load file containing value to XOR
+                  && Badject::build(bad_bin.str, str_bin.str);  // process badchars
+    (*ptr_arg)++;   // point to next argument (next flag or \0)
     return ret;
 }
 
 
 bool Binject::get_of(char*** ptr_arg)
 {
-    const bool ret = Getter::check_fext(*(++(*ptr_arg)));    // file name OK
+    (*ptr_arg)++;               // point to next argument (next flag or \0)
+    const bool ret = Getter::check_fext(**ptr_arg);    // file name OK
     if(ret)
     {
-        outfile = *((*ptr_arg)++);   // store file name
+        outfile = **ptr_arg;   // store file name
     }
+    (*ptr_arg)++;               // point to next argument (next flag or \0)
     return ret;
 }
 
