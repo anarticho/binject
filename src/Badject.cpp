@@ -1,22 +1,46 @@
 #include "Badject.h"
 
-void Badject::gen_out()
+void Badject::gen_output()
 {
+    std::cout << "[*] xvl.bin containing computed XOR value." << std::endl;
+    std::ofstream xvl("xvl.bin", File::wr_mode);
+    xvl.write(reinterpret_cast<const char*>(&cpxor), sizeof(cpxor));
+    xvl.close();
 
+    std::cout << "[*] Offset for detected bad characters:" << std::endl;
+    std::string str_bin;
+    const size_t str_sz = parms.mods.size();
+    for(size_t i=0; i<str_sz; i++)
+    {
+        uint8_t str_c = parms.mods[i];
+        if(offqe.front() == i)
+        {
+            std::cout << "\t- " << offqe.front() << std::endl;
+            str_c ^= cpxor;
+            offqe.pop();
+        }
+        str_bin += str_c;
+    }
+
+    std::ofstream esc("esc.bin", File::wr_mode);
+    esc.write(str_bin.c_str(), str_bin.size());
+    esc.close();
+
+    std::cout << "[*] esc.bin containing XORed argument." << std::endl;
 }
 
-bool Badject::init_xor(std::string bad_bin)
+bool Badject::compute_xor()
 {
     bool ret = false;
     while(!ret && (cpxor != UINT8_MAX))
     {
         ret = true;
-        std::string::iterator itr = bad_bin.begin();
-        const std::string::iterator end = bad_bin.end();
+        std::string::iterator itr = parms.bads.begin();
+        const std::string::iterator end = parms.bads.end();
         for(; ret && (itr != end); itr++)
         {
             const uint8_t cptmp = cpxor^(*itr);
-            ret = (bad_bin.find(cptmp) == std::string::npos);
+            ret = (parms.bads.find(cptmp) == std::string::npos);
         }
         cpxor += !ret;
     };
@@ -24,16 +48,25 @@ bool Badject::init_xor(std::string bad_bin)
     {
         std::cout << "[*] XOR not computed from badchar binary." << std::endl;
     }
+    else
+    {
+    }
     return ret;
 }
 
-bool Badject::chck_str(std::string bad_bin, std::string str_bin)
+bool Badject::compute_str()
 {
     bool ret = false;
-    std::string::iterator itr = bad_bin.begin();
-    while(!ret && (itr!=bad_bin.end()))
+    std::string::iterator str_itr = parms.mods.begin();
+    while(str_itr != parms.mods.end())
     {
-        ret = (str_bin.find(*itr) != std::string::npos);
+        if(parms.bads.find(*str_itr) != std::string::npos)
+        {
+            const uint16_t idx = std::distance(parms.mods.begin(), str_itr);
+            offqe.push(idx);
+            ret = true;
+        }
+        str_itr++;
     };
     if(!ret)
     {
@@ -44,12 +77,12 @@ bool Badject::chck_str(std::string bad_bin, std::string str_bin)
 
 bool Badject::build(std::string bad_bin, std::string str_bin)
 {
-    Badject bad_obj;
-    const bool ret = bad_obj.chck_str(bad_bin, str_bin) 
-                  && bad_obj.init_xor(bad_bin);
+    Badject bad_obj({bad_bin, str_bin});
+    const bool ret = bad_obj.compute_xor()  // fix ::cpxor
+                  && bad_obj.compute_str(); // fix ::offqe
     if(ret)
     {
-        bad_obj.gen_out();
+        bad_obj.gen_output();
     }
     return ret;
 }

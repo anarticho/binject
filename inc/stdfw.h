@@ -12,4 +12,12 @@
 #include <regex>        // for std::regex_match
 #include <string>       // for std::stoi (and std::string obviously)
 
+namespace File
+{
+    using namespace std;
+
+    static const ios_base::openmode wr_mode = 
+        ios_base::out | ios_base::binary | ios_base::trunc;
+}
+
 #endif
