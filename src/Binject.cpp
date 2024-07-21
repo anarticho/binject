@@ -2,35 +2,6 @@
 
 #include "Badject.h"
 
-bool Binject::get_bd(char*** ptr_arg)
-{
-    Output bad_bin, str_bin;
-    const bool ret = Builder::get_if0(*(++(*ptr_arg)), bad_bin) 
-                  && Builder::get_if0(*((*ptr_arg)+1), str_bin)
-                  && Badject::build(bad_bin.str, str_bin.str);
-    *ptr_arg += ret;
-    return ret;
-}
-
-
-bool Binject::get_of(char*** ptr_arg)
-{
-    const bool ret = Builder::check_fext(*(++(*ptr_arg)));    // file name OK
-    if(ret)
-    {
-        outfile = *((*ptr_arg)++);   // store file name
-    }
-    return ret;
-}
-
-
-bool Binject::check(char*** ptr_arg)
-{
-    const bool is_flag = (func_map.count(**ptr_arg) != 0);          // check for existing first parameter
-    const bool ret = is_flag && func_map.at(**ptr_arg)(ptr_arg);    // increment ptr
-    return (!is_flag) || ret;
-}
-
 Binject::Binject(int argc, char* argv[]):
     Builder(),
     outfile()
@@ -46,6 +17,13 @@ Binject::Binject(int argc, char* argv[]):
     }
 }
 
+bool Binject::check(char*** ptr_arg)
+{
+    const bool is_flag = (func_map.count(**ptr_arg) != 0);          // check for existing first parameter
+    const bool ret = is_flag && func_map.at(**ptr_arg)(ptr_arg);    // increment ptr
+    return (!is_flag) || ret;
+}
+
 bool Binject::build(char** start)
 {
     bool ret = true;
@@ -56,6 +34,28 @@ bool Binject::build(char** start)
     };
     return ret;
 }
+
+bool Binject::get_bd(char*** ptr_arg)
+{
+    Output bad_bin, str_bin;
+    const bool ret = Getter::get_if0(*(++(*ptr_arg)), bad_bin) 
+                  && Getter::get_if0(*((*ptr_arg)+1), str_bin)
+                  && Badject::build(bad_bin.str, str_bin.str);
+    *ptr_arg += ret;
+    return ret;
+}
+
+
+bool Binject::get_of(char*** ptr_arg)
+{
+    const bool ret = Getter::check_fext(*(++(*ptr_arg)));    // file name OK
+    if(ret)
+    {
+        outfile = *((*ptr_arg)++);   // store file name
+    }
+    return ret;
+}
+
 
 bool Binject::get_ostr(std::ofstream& ofstr)
 {
