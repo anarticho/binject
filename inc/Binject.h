@@ -4,7 +4,7 @@
 #include "Builder.h"
 
 /// @brief 
-class Binject
+class Binject: private Builder
 {
     public:
         /// @brief Constructor.
@@ -16,16 +16,8 @@ class Binject
         void step();
 
     private:
-        enum Build_state    ///< States to parse arguments.
-        {
-            st_flag,    ///< Check and parse first byte expected to contain flags.
-            st_mult,    ///< Check and parse multiplier ASCII string.
-            st_str,     ///< Just parse 
-        };
-
-        Builder::Outputs outputs;   ///< Queue to store Output objects to be processed on step.
-        Builder          builder;   ///< Object to build queue of Output to be processed.
-        std::string      outfile;   ///< File for to redirect output content (optionnal, zero-length at build-time).
+        /// File for to redirect output content (optionnal, zero-length at build-time).
+        std::string outfile;
 
         /// Map of functions to process the first flag.
         std::map<std::string, std::function<bool (char***)> > func_map;

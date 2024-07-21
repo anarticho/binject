@@ -1,8 +1,15 @@
 #include "Binject.h"
 
+#include "Badject.h"
+
 bool Binject::get_bd(char*** ptr_arg)
 {
-
+    Output bad_bin, str_bin;
+    const bool ret = Builder::get_if0(*(++(*ptr_arg)), bad_bin) 
+                  && Builder::get_if0(*((*ptr_arg)+1), str_bin)
+                  && Badject::build(bad_bin.str, str_bin.str);
+    *ptr_arg += ret;
+    return ret;
 }
 
 
@@ -25,8 +32,7 @@ bool Binject::check(char*** ptr_arg)
 }
 
 Binject::Binject(int argc, char* argv[]):
-    outputs(),
-    builder(outputs),   // construct the builder with outputs queue
+    Builder(),
     outfile()
 {
     // build map for flags and related functions.
@@ -43,10 +49,10 @@ Binject::Binject(int argc, char* argv[]):
 bool Binject::build(char** start)
 {
     bool ret = true;
-    builder.init(&start);       // provide pointer to the first argument pointer
+    Builder::init(&start);       // provide pointer to the first argument pointer
     while(ret && *start)
     {
-        ret = builder.step();   // return false at error
+        ret = Builder::step();   // return false at error
     };
     return ret;
 }

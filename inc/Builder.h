@@ -7,13 +7,6 @@
 class Builder
 {
     public:
-        /// @brief  Type definition for vecotr of Output objects.
-        typedef std::queue<Output> Outputs;
-
-        /// @brief Default constructor.
-        /// @param outputs  Queue of objects to store parsed arguments.
-        explicit Builder(Outputs& outputs);
-
         /// @brief Initialize pointer for arguments both with pointer for last element.
         /// @param ptr0 Pointer to the pointer for arguments.
         void init(char*** ptr0);
@@ -22,10 +15,23 @@ class Builder
         /// @return False if an error occured, else return True.
         bool step();
 
+    protected:
+        typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
+        Builder::Outputs outputs;           ///< Queue to store Output objects to be processed on step.
+
+        /// @brief Default constructor.
+        Builder();
+
         /// @brief Check extension for files.
         /// @param str  String to check.
         /// @return True if extension is ".bin", else return False.
         static bool check_fext(const char* str);
+
+        /// @brief Check, parse and store -if argument within provided Output object.
+        /// @param str  File name.
+        /// @param out  Output object
+        /// @return False if format is invalid (or if file do not exist), else return True.
+        static bool get_if0(const char* str, Output& out);
 
     private:
         Output out_obj;     ///< Output object, as cache.

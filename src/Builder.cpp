@@ -10,7 +10,24 @@ bool Builder::check_fext(const char* str)
     return (arg_sz >= ext_sz) && (bin_str.compare(str+arg_sz-ext_sz) == 0);
 }
 
-Builder::Builder(Outputs& outputs):
+bool Builder::get_if0(const char* str, Output& out)
+{
+    std::ifstream ifstr;
+    const bool ret = check_fext(str)
+                 && (ifstr.open(str, std::ifstream::binary), true) 
+                 && ifstr.is_open();
+    if(ret)
+    {
+        std::ostringstream tmp;
+        tmp << ifstr.rdbuf();
+        out.str = tmp.str();
+    }
+    ifstr.close();
+    return ret;
+}
+
+Builder::Builder():
+    outputs(),
     out_obj(),
     out_q(outputs),
     ptr_arg(0)
@@ -96,21 +113,21 @@ bool Builder::get_x()
 
 bool Builder::get_s()
 {
-    (*ptr_arg)++;
-    out_obj.str = **ptr_arg;
-    (*ptr_arg)++;
+    (*ptr_arg)++;               // get next argument (from flag to data)
+    out_obj.str = **ptr_arg;    // just get string within out_obj
+    (*ptr_arg)++;               // point to next argument (next flag or \0)
     return true;
 }
 
 bool Builder::get_x64()
 {
-    static const uint8_t u64_sz8 = 8;           // 64-bits unsigned integer length in bytes.  
-    const bool ret = Builder::get_x()           // increment ptr_arg
-                     && (out_obj.str.length() <= u64_sz8);
+    static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
+    const bool ret = Builder::get_x()                           // ::get_x increment ptr_arg
+                     && (out_obj.str.length() <= u64_sz8);      // check if fit within x64 address
     if(ret)
     {
-        std::reverse(out_obj.str.begin(), out_obj.str.end());
-        while(out_obj.str.length() != u64_sz8)
+        std::reverse(out_obj.str.begin(), out_obj.str.end());   // set little-endian
+        while(out_obj.str.length() != u64_sz8)                  // fill out_obj with 0 for padding
         {
             out_obj.str += '\0';
         }
@@ -120,18 +137,8 @@ bool Builder::get_x64()
 
 bool Builder::get_if()
 {
-    (*ptr_arg)++;
-    std::ifstream ifstr;
-    const bool ret = check_fext(**ptr_arg)
-                 && (ifstr.open(**ptr_arg, std::ifstream::binary), true) 
-                 && ifstr.is_open();
-    if(ret)
-    {
-        std::ostringstream tmp;
-        tmp << ifstr.rdbuf();
-        out_obj.str = tmp.str();
-    }
-    ifstr.close();
-    (*ptr_arg)++;
+    (*ptr_arg)++;                                   // get next argument (from flag to data)
+    const bool ret = get_if0(**ptr_arg, out_obj);   // parse -if within out_obj
+    (*ptr_arg)++;                                   // point to next argument (next flag or \0)
     return ret;
 }
