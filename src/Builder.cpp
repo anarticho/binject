@@ -3,7 +3,6 @@
 Builder::Builder():
     outputs(),
     out_obj(),
-    out_q(outputs),
     ptr_arg(0)
 {
     func_map["-s"] = std::bind(&Builder::get_s, this);
@@ -22,15 +21,15 @@ bool Builder::step()
                 && func_map.at(**ptr_arg)();        // execute function (and increment pointer)
     if(ret)
     {
-        out_q.push(out_obj);
+        outputs.push(out_obj);
         out_obj.nb = 1;
     }
     else
     {
         ptr_arg = 0;
-        while(!out_q.empty())
+        while(!outputs.empty())
         {
-            out_q.pop();
+            outputs.pop();
         };
     }
     return ret;

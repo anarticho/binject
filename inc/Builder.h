@@ -4,7 +4,7 @@
 #include <Getter.h>
 
 /// @brief Builder of Output objects from provided inputs.
-class Builder: public Getter
+class Builder
 {
     public:
         /// @brief Initialize pointer for arguments both with pointer for last element.
@@ -16,15 +16,14 @@ class Builder: public Getter
         bool step();
 
     protected:
-        Getter::Outputs outputs;    ///< Queue to store Output objects to be processed on step.
+        typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
+        Outputs outputs;                    ///< Queue to store Output objects to be processed on step.
 
         /// @brief Default constructor.
         Builder();
 
     private:
         Output out_obj;     ///< Output object, as cache.
-        Outputs& out_q;     ///< Queue of Output objects.
-
         char*** ptr_arg;    ///< Pointer to the pointer of arguments.
 
         /// Map of functions to process arguments.

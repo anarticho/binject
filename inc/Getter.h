@@ -6,12 +6,6 @@
 struct Getter
 {
     public:
-    protected:
-        typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
-
-        /// @brief Default constructor, do nothing.
-        inline Getter() {};
-
         /// @brief Check extension for files.
         /// @param str  String to check.
         /// @return True if extension is ".bin", else return False.
