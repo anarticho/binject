@@ -8,7 +8,7 @@ class Binject: private Builder
 {
     public:
         /// @brief Constructor.
-        /// @param argc     Number of arguments (from main entry point).
+        /// @param argc     Total number of arguments (including path, not explicitly inserted).
         /// @param argv     Array of arguments (from main entry point).
         explicit Binject(int argc, char* argv[]);
 
@@ -19,28 +19,17 @@ class Binject: private Builder
         /// File for to redirect output content (optionnal, zero-length at build-time).
         Output out_file;
 
-        /// Map of functions to process the first flag.
-        std::map<std::string, std::function<bool (char***)> > func_map;
-
         /// @brief Check, parse and process -bd flag from provided parameter.
-        /// @param ptr_arg  Pointer to the argument as ASCII string.
         /// @return False if process failed, else return True.
-        bool get_bd(char*** ptr_arg);
+        bool get_bd();
 
         /// @brief Check, parse and process -of flag from provided parameter.
-        /// @param ptr_arg  Pointer to the argument as ASCII string.
         /// @return False if process failed, else return True.
-        bool get_of(char*** ptr_arg);
+        bool get_of();
 
         /// @brief Check first argument and forward to first parameter or to the builder.
-        /// @param ptr_arg  Pointer to the argument as ASCII string.
         /// @return False if process failed, else return True.
-        bool check(char*** ptr_arg);
-
-        /// @brief Build queue of Output objects from provided parameters.
-        /// @param ptr  Array of null terminated strings to be built.
-        /// @return False if an error occured, else return True.
-        bool build(char** ptr);
+        bool check();
 
         Binject(const Binject& orig); ///< = delete
         Binject& operator=(const Binject& orig); ///< = delete

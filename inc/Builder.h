@@ -7,10 +7,6 @@
 class Builder
 {
     public:
-        /// @brief Initialize pointer for arguments both with pointer for last element.
-        /// @param ptr0 Pointer to the pointer for arguments.
-        void init(char*** ptr0);
-
         /// @brief Iterate through internal FSM.
         /// @return False if an error occured, else return True.
         bool step();
@@ -18,13 +14,13 @@ class Builder
     protected:
         typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
         Outputs outputs;                    ///< Queue to store Output objects to be processed on step.
-
+        std::queue<std::string> args;       ///< Queue to store arguments as std::string.
+        
         /// @brief Default constructor.
         Builder();
 
     private:
         Output out_obj;     ///< Output object, as cache.
-        char*** ptr_arg;    ///< Pointer to the pointer of arguments.
 
         /// Map of functions to process arguments.
         std::map<std::string, std::function<bool ()> > func_map;
@@ -65,26 +61,21 @@ class Builder
         Builder& operator=(const Builder& orig); ///< = delete
 };
 
-inline void Builder::init(char*** ptr0)
-{
-    ptr_arg = ptr0;
-}
-
 inline bool Builder::get_nx()
 {
-    (*ptr_arg)++;
+    args.pop();
     return get_n() && get_x();
 }
 
 inline bool Builder::get_ns()
 {
-    (*ptr_arg)++;
+    args.pop();
     return get_n() && get_s();
 }
 
 inline bool Builder::get_na()
 {
-    (*ptr_arg)++;
+    args.pop();
     return get_n() && get_a();
 }
 
