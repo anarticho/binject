@@ -1,8 +1,8 @@
 #include <Builder.h>
 
-Builder::Builder():
+Builder::Builder(Args& args0):
     outputs(),
-    args(),
+    args(args0),
     out_obj()
 {
     func_map["-s"] = std::bind(&Builder::get_s, this);
@@ -16,9 +16,9 @@ Builder::Builder():
 
 bool Builder::step()
 {
-    const bool ret = !args.empty()                      // still argument to process
-                && (func_map.count(args.front()) != 0)  // verify flag within map
-                && func_map.at(args.front())();         // execute function (and increment pointer)
+    const bool ret = !args.current().empty()                // is not empty
+                && (func_map.count(args.current()) != 0)    // verify flag within map
+                && func_map.at(args.cunext())();            // execute function (and increment pointer)
     if(ret)
     {
         outputs.push(out_obj);
@@ -26,9 +26,9 @@ bool Builder::step()
     }
     else
     {
-        while(!args.empty() && !outputs.empty())
+        while(args.isn() && !outputs.empty())
         {
-            args.pop();
+            args.next();
             outputs.pop();
         };
     }
@@ -40,7 +40,7 @@ bool Builder::get_n()
     bool ret = true;
     try
     {
-        const int tmp = std::stoi(args.front());
+        const int tmp = std::stoi(args.cunext());
         ret = (tmp <= UINT16_MAX);
         out_obj.nb = tmp;
     }
@@ -53,32 +53,24 @@ bool Builder::get_n()
 
 bool Builder::get_x()
 {
-    args.pop();
-    const bool ret = Getter::get_x0(args.front(), out_obj);
-    args.pop();
+    const bool ret = Getter::get_x0(args.cunext(), out_obj);
     return ret;
 }
 
 bool Builder::get_s()
 {
-    args.pop();                 // get next argument (from flag to data)
-    out_obj.str = args.front(); // just get string within out_obj
-    args.pop();                 // point to next argument (next flag or \0)
+    out_obj.str = args.cunext();
     return true;
 }
 
 bool Builder::get_a()
 {
-    args.pop();
-    const bool ret = Getter::get_a0(args.front(), out_obj);
-    args.pop();
+    const bool ret = Getter::get_a0(args.cunext(), out_obj);
     return ret;     
 }
 
 bool Builder::get_if()
 {
-    args.pop();                                                         // get next argument (from flag to data)
-    const bool ret = Getter::get_if0(args.front(), out_obj);    // parse -if within out_obj
-    args.pop();                                                         // point to next argument (next flag or \0)
+    const bool ret = Getter::get_if0(args.cunext(), out_obj);
     return ret;
 }

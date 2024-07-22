@@ -4,7 +4,7 @@
 #include <Builder.h>
 
 /// @brief 
-class Binject: private Builder
+class Binject: private Args, private Builder
 {
     public:
         /// @brief Constructor.

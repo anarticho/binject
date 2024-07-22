@@ -14,10 +14,11 @@ class Builder
     protected:
         typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
         Outputs outputs;                    ///< Queue to store Output objects to be processed on step.
-        std::queue<std::string> args;       ///< Queue to store arguments as std::string.
+        
+        Args& args;  ///< Reference to the Args object, provided at build-time.
         
         /// @brief Default constructor.
-        Builder();
+        explicit Builder(Args& args0);
 
     private:
         Output out_obj;     ///< Output object, as cache.
@@ -63,19 +64,16 @@ class Builder
 
 inline bool Builder::get_nx()
 {
-    args.pop();
     return get_n() && get_x();
 }
 
 inline bool Builder::get_ns()
 {
-    args.pop();
     return get_n() && get_s();
 }
 
 inline bool Builder::get_na()
 {
-    args.pop();
     return get_n() && get_a();
 }
 
