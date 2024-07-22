@@ -1,6 +1,7 @@
 #include <Getter.h>
 
 #include <Badject.h>
+#include <File.h>
 
 bool Getter::check_fext(const std::string& str)
 {
@@ -14,38 +15,26 @@ bool Getter::check_fext(const std::string& str)
 
 bool Getter::get_if0(const std::string& str, Output& out)
 {
-    std::ifstream ifstr;
-    const bool ret = check_fext(str)
-                 && (ifstr.open(str, std::ifstream::binary), true) 
-                 && ifstr.is_open();
-    if(ret)
-    {
-        std::ostringstream tmp;
-        tmp << ifstr.rdbuf();
-        out.str = tmp.str();
-    }
-    ifstr.close();
+    const bool ret = check_fext(str) && File::read(str.c_str(), out.str);
     return ret;
 }
 
 bool Getter::get_x0(const std::string& str, Output& out)
 {
-    static std::string patrn = "[a-fA-F0-9]+"; // only digits and uppercase A to F
-    static const size_t hex_sz = 2;
+    static const size_t hex_sz = 2;             // expected size is even (because of hex format)
+    static std::string patrn = "[a-fA-F0-9]+";  // only digits and lower and uppercases from A to f
 
     std::string hex_str(str);
-    const size_t str_sz = hex_str.length();
-    
-    bool ret = ((str_sz%hex_sz) == 0)       // even size
-            && (std::regex_match(str, std::regex(patrn)));
+    const size_t str_sz = hex_str.length();     // check provided size is even and matching pattern.
+    bool ret = ((str_sz%hex_sz) == 0) && (std::regex_match(str, std::regex(patrn)));
     if(ret)
     {
-        out.str.clear();                // clear str before using += operator.
+        out.str.clear();                        // clear str before using += operator
         for(size_t pos=0; ret && (pos<str_sz); pos+=2)
         {
-            try
+            try                                 // std::stoi call can throw an exception
             {
-                static const int base_hex = 16;
+                static const size_t base_hex = 16;
                 out.str += static_cast<char>(std::stoi(hex_str.substr(pos, hex_sz), 0, base_hex));
             }
             catch (const std::exception& e)
@@ -59,7 +48,6 @@ bool Getter::get_x0(const std::string& str, Output& out)
 
 bool Getter::get_a0(const std::string& str, Output& out)
 {
-    static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
     const bool ret = Getter::get_x0(str, out)                   // ::get_x increment ptr_arg
                      && (out.str.length() <= u64_sz8);          // check if fit within x64 address
     if(ret)
@@ -83,8 +71,8 @@ bool Getter::get_of0(const std::string& str, Output& out)
 bool Getter::get_bd0(const std::string& bad, const std::string& str)
 {
     Output bad_bin, str_bin;
-    const bool ret = Getter::get_if0(bad, bad_bin)              // load file containing bad characters
-                  && Getter::get_if0(str, str_bin)              // load file containing value to XOR
+    const bool ret = get_if0(bad, bad_bin)  // load file containing bad characters
+                  && get_if0(str, str_bin)  // load file containing value to XOR
                   && Badject::build(bad_bin.str, str_bin.str);  // process badchars
     return ret;
 }

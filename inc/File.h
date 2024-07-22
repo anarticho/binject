@@ -7,6 +7,7 @@ struct File
 {
     public:
         static void write(const char* fname, std::string fdata);
+        static bool read(const char* fname, std::string& fdata);
 
     private:
         static const std::ios_base::openmode wr_mode;
