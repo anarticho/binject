@@ -2,6 +2,7 @@
 #define BUILDER_H_
 
 #include <Getter.h>
+#include <Args.h>
 
 /// @brief Builder of Output objects from provided inputs.
 class Builder
@@ -14,10 +15,10 @@ class Builder
     protected:
         typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
         Outputs outputs;                    ///< Queue to store Output objects to be processed on step.
-        
-        Args& args;  ///< Reference to the Args object, provided at build-time.
+        Args& args;                         ///< Reference to the Args object, provided at build-time.
         
         /// @brief Default constructor.
+        /// @param args0 Args object containing all the arguments to be parsed.
         explicit Builder(Args& args0);
 
     private:

@@ -5,13 +5,13 @@ Builder::Builder(Args& args0):
     args(args0),
     out_obj()
 {
-    func_map["-s"] = std::bind(&Builder::get_s, this);
-    func_map["-ns"] = std::bind(&Builder::get_ns, this);
-    func_map["-x"] = std::bind(&Builder::get_x, this);
-    func_map["-nx"] = std::bind(&Builder::get_nx, this);
-    func_map["-a"] = std::bind(&Builder::get_a, this);
-    func_map["-na"] = std::bind(&Builder::get_na, this);
-    func_map["-if"] = std::bind(&Builder::get_if, this);
+    func_map.insert(std::make_pair("-s",    std::bind(&Builder::get_s, this)));
+    func_map.insert(std::make_pair("-ns",   std::bind(&Builder::get_ns, this)));
+    func_map.insert(std::make_pair("-x",    std::bind(&Builder::get_x, this)));
+    func_map.insert(std::make_pair("-nx",   std::bind(&Builder::get_nx, this)));
+    func_map.insert(std::make_pair("-a",    std::bind(&Builder::get_a, this)));
+    func_map.insert(std::make_pair("-na",   std::bind(&Builder::get_na, this)));
+    func_map.insert(std::make_pair("-if",   std::bind(&Builder::get_if, this)));
 }
 
 bool Builder::step()

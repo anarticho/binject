@@ -1,7 +1,7 @@
 #ifndef STDFW_H_
 #define STDFW_H_
 
-#include <algorithm> // for std::reverse
+#include <algorithm>    // for std::reverse
 #include <cstdint>      // for native types (uint8_t)
 #include <cstring>      // for std::strlen
 #include <functional>   // for std::function
@@ -12,12 +12,6 @@
 #include <regex>        // for std::regex_match
 #include <string>       // for std::stoi (and std::string obviously)
 
-namespace File
-{
-    using namespace std;
-
-    static const ios_base::openmode wr_mode = 
-        ios_base::out | ios_base::binary | ios_base::trunc;
-}
+static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
 
 #endif

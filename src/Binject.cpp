@@ -18,8 +18,8 @@ bool Binject::check()
 {
     /// Map of functions to process the first flag.
     std::map<std::string, std::function<bool ()> > func_map;
-    func_map["-of"] = std::bind(&Binject::get_of, this);
-    func_map["-bd"] = std::bind(&Binject::get_bd, this);
+    func_map.insert(std::make_pair("-of",   std::bind(&Binject::get_of, this)));
+    func_map.insert(std::make_pair("-bd",   std::bind(&Binject::get_bd, this)));
     const bool is_flag = args.isn() && (func_map.count(args.current()) != 0); // check if within map
     bool ret = is_flag && func_map.at(args.cunext())();   // change args state (by calling pop)
     return (!is_flag) || ret;
@@ -27,8 +27,8 @@ bool Binject::check()
 
 bool Binject::get_bd()
 {
-    Args::Arg bad_str = args.cunext();
-    Args::Arg arg_str = args.cunext();
+    std::string bad_str = args.cunext();
+    std::string arg_str = args.cunext();
     const bool ret = Getter::get_bd0(bad_str, arg_str);
     return ret;
 }

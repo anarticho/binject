@@ -7,8 +7,6 @@
 struct Args
 {
     public:
-        typedef const std::string& Arg; ///< Typedef for function's parameters.
-
         /// @brief Default constructor.
         /// @param argc Total number of arguments (path included).
         /// @param argv Array of arguments.

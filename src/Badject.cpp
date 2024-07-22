@@ -1,5 +1,7 @@
 #include <Badject.h>
 
+#include <File.h>
+
 void Badject::gen_xvl()
 {
     static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
@@ -9,10 +11,7 @@ void Badject::gen_xvl()
     {
         xvl_str += '\0';
     }
-
-    std::ofstream xvl("xvl.bin", File::wr_mode);
-    xvl.write(xvl_str.c_str(), xvl_str.size());
-    xvl.close();
+    File::write("xvl.bin", xvl_str);
     std::cout << "[*] xvl.bin containing computed XOR value." << std::endl;
 }
 
@@ -32,11 +31,7 @@ void Badject::gen_esc()
         }
         str_bin += str_c;
     }
-
-    std::ofstream esc("esc.bin", File::wr_mode);
-    esc.write(str_bin.c_str(), str_bin.size());
-    esc.close();
-
+    File::write("esc.bin", str_bin);
     std::cout << "[*] esc.bin containing XORed argument." << std::endl;
 }
 
