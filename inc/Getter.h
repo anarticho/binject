@@ -1,7 +1,7 @@
 #ifndef GETTER_H_
 #define GETTER_H_
 
-#include "Output.h"
+#include <Output.h>
 
 struct Getter
 {

@@ -1,7 +1,7 @@
 #ifndef OUTPUT_H_
 #define OUTPUT_H_
 
-#include "stdfw.h"
+#include <stdfw.h>
 
 /// @brief Output structure to handle string, number of occurences and process to output it to standart stream.
 struct Output
