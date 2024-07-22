@@ -35,6 +35,12 @@ struct Getter
         /// @return False if format is invalid, else return True.
         static bool get_a0(const char* str, Output& out);
 
+        /// @brief Check, parse and process -of flag from provided parameter.
+        /// @param str  File name.
+        /// @param out  Output object.
+        /// @return False if process failed, else return True.
+        static bool get_of0(const char* str, Output& out);
+
     private:
         Getter(const Getter& orig); ///< = delete
         Getter& operator=(const Getter& orig); ///< = delete

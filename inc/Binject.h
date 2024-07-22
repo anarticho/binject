@@ -17,7 +17,7 @@ class Binject: private Builder
 
     private:
         /// File for to redirect output content (optionnal, zero-length at build-time).
-        std::string outfile;
+        Output out_file;
 
         /// Map of functions to process the first flag.
         std::map<std::string, std::function<bool (char***)> > func_map;

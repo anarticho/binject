@@ -70,3 +70,10 @@ bool Getter::get_a0(const char* str, Output& out)
     }
     return ret;
 }
+
+bool Getter::get_of0(const char* str, Output& out)
+{
+    const bool ret = Getter::check_fext(str);   // file name OK
+    out.str = str;                              // store file name
+    return ret;
+}

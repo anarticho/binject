@@ -4,7 +4,7 @@
 
 Binject::Binject(int argc, char* argv[]):
     Builder(),
-    outfile()
+    out_file()
 {
     // build map for flags and related functions.
     func_map["-of"] = std::bind(&Binject::get_of, this, std::placeholders::_1);
@@ -49,12 +49,8 @@ bool Binject::get_bd(char*** ptr_arg)
 
 bool Binject::get_of(char*** ptr_arg)
 {
-    (*ptr_arg)++;               // point to next argument (next flag or \0)
-    const bool ret = Getter::check_fext(**ptr_arg);    // file name OK
-    if(ret)
-    {
-        outfile = **ptr_arg;   // store file name
-    }
+    (*ptr_arg)++;   // point to next argument (next flag or \0)
+    const bool ret = Getter::get_of0(**ptr_arg, out_file);
     (*ptr_arg)++;               // point to next argument (next flag or \0)
     return ret;
 }
@@ -62,11 +58,11 @@ bool Binject::get_of(char*** ptr_arg)
 
 bool Binject::get_ostr(std::ofstream& ofstr)
 {
-    const bool is_file = !outfile.empty();
+    const bool is_file = !out_file.str.empty();
     bool is_ok = false;
     if(is_file)
     { 
-        ofstr.open(outfile, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+        ofstr.open(out_file.str, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
         is_ok = ofstr.is_open() && (std::cout.rdbuf(ofstr.rdbuf()), true);
         while(!is_file && !outputs.empty())
         {
