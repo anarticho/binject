@@ -1,6 +1,5 @@
 #include <Binject.h>
 
-#include <Badject.h>
 #include <Outject.h>
 
 Binject::Binject(int argc, char* argv[]):
@@ -34,11 +33,9 @@ bool Binject::check()
 bool Binject::get_bd()
 {
     args.pop();
-    Output bad_bin, str_bin;
-    const bool ret = Getter::get_if0(args.front().c_str(), bad_bin) // load file containing bad characters
-                  && (args.pop(), true)                             // pop to get next data
-                  && Getter::get_if0(args.front().c_str(), str_bin) // load file containing value to XOR
-                  && Badject::build(bad_bin.str, str_bin.str);      // process badchars
+    std::string bad_str(args.front());
+    args.pop();
+    const bool ret = Getter::get_bd0(bad_str, args.front());
     args.pop();
     return ret;
 }
@@ -47,7 +44,7 @@ bool Binject::get_bd()
 bool Binject::get_of()
 {
     args.pop();
-    const bool ret = Getter::get_of0(args.front().c_str(), out_file);
+    const bool ret = Getter::get_of0(args.front(), out_file);
     args.pop();
     return ret;
 }

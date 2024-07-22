@@ -40,7 +40,7 @@ bool Builder::get_n()
     bool ret = true;
     try
     {
-        const int tmp = std::stoi(args.front().c_str());
+        const int tmp = std::stoi(args.front());
         ret = (tmp <= UINT16_MAX);
         out_obj.nb = tmp;
     }
@@ -54,7 +54,7 @@ bool Builder::get_n()
 bool Builder::get_x()
 {
     args.pop();
-    const bool ret = Getter::get_x0(args.front().c_str(), out_obj);
+    const bool ret = Getter::get_x0(args.front(), out_obj);
     args.pop();
     return ret;
 }
@@ -70,7 +70,7 @@ bool Builder::get_s()
 bool Builder::get_a()
 {
     args.pop();
-    const bool ret = Getter::get_a0(args.front().c_str(), out_obj);
+    const bool ret = Getter::get_a0(args.front(), out_obj);
     args.pop();
     return ret;     
 }
@@ -78,7 +78,7 @@ bool Builder::get_a()
 bool Builder::get_if()
 {
     args.pop();                                                         // get next argument (from flag to data)
-    const bool ret = Getter::get_if0(args.front().c_str(), out_obj);    // parse -if within out_obj
+    const bool ret = Getter::get_if0(args.front(), out_obj);    // parse -if within out_obj
     args.pop();                                                         // point to next argument (next flag or \0)
     return ret;
 }

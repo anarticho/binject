@@ -1,16 +1,18 @@
 #include <Getter.h>
 
-bool Getter::check_fext(const char* str)
+#include <Badject.h>
+
+bool Getter::check_fext(std::string& str)
 {
     const std::string bin_str = ".bin";
 
     const size_t ext_sz = bin_str.length();
-    const size_t arg_sz = std::strlen(str);
+    const size_t arg_sz = str.size();
 
-    return (arg_sz >= ext_sz) && (bin_str.compare(str+arg_sz-ext_sz) == 0);
+    return (arg_sz >= ext_sz) && (bin_str.compare(str.c_str()+arg_sz-ext_sz) == 0);
 }
 
-bool Getter::get_if0(const char* str, Output& out)
+bool Getter::get_if0(std::string& str, Output& out)
 {
     std::ifstream ifstr;
     const bool ret = check_fext(str)
@@ -26,7 +28,7 @@ bool Getter::get_if0(const char* str, Output& out)
     return ret;
 }
 
-bool Getter::get_x0(const char* str, Output& out)
+bool Getter::get_x0(std::string& str, Output& out)
 {
     static std::string patrn = "[a-fA-F0-9]+"; // only digits and uppercase A to F
     static const size_t hex_sz = 2;
@@ -55,7 +57,7 @@ bool Getter::get_x0(const char* str, Output& out)
     return ret;
 }
 
-bool Getter::get_a0(const char* str, Output& out)
+bool Getter::get_a0(std::string& str, Output& out)
 {
     static const uint8_t u64_sz8 = UINT64_WIDTH / UINT8_WIDTH;  // 8 bytes length (64-bits)  
     const bool ret = Getter::get_x0(str, out)                   // ::get_x increment ptr_arg
@@ -71,9 +73,18 @@ bool Getter::get_a0(const char* str, Output& out)
     return ret;
 }
 
-bool Getter::get_of0(const char* str, Output& out)
+bool Getter::get_of0(std::string& str, Output& out)
 {
     const bool ret = Getter::check_fext(str);   // file name OK
     out.str = str;                              // store file name
+    return ret;
+}
+
+bool Getter::get_bd0(std::string& bad, std::string& str)
+{
+    Output bad_bin, str_bin;
+    const bool ret = Getter::get_if0(bad, bad_bin)              // load file containing bad characters
+                  && Getter::get_if0(str, str_bin)              // load file containing value to XOR
+                  && Badject::build(bad_bin.str, str_bin.str);  // process badchars
     return ret;
 }
