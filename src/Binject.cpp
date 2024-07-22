@@ -1,6 +1,7 @@
 #include <Binject.h>
 
 #include <Badject.h>
+#include <Outject.h>
 
 Binject::Binject(int argc, char* argv[]):
     Builder(),
@@ -55,34 +56,14 @@ bool Binject::get_of(char*** ptr_arg)
     return ret;
 }
 
-
-bool Binject::get_ostr(std::ofstream& ofstr)
-{
-    const bool is_file = !out_file.str.empty();
-    bool is_ok = false;
-    if(is_file)
-    { 
-        ofstr.open(out_file.str, std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
-        is_ok = ofstr.is_open() && (std::cout.rdbuf(ofstr.rdbuf()), true);
-        while(!is_file && !outputs.empty())
-        {
-            outputs.pop();
-        };
-    }
-    return !is_file || is_ok;
-}
-
 void Binject::step()
 {
-    std::streambuf* shrbuf = std::cout.rdbuf();
-    std::ofstream ofstr;
-    const bool out_ok = get_ostr(ofstr);
-    while(out_ok && !outputs.empty())
+    Outject out(out_file.str);  // create file and redirect flux if necessary.
+    while(!out.has_fail() && !outputs.empty())
     {
         Output out = outputs.front();
         out.process();
         outputs.pop();
     };
-    std::cout.rdbuf(shrbuf);
-    ofstr.close();
+    // ~Outject, DTOR is called here, to close file and restablish original std::cout if necessary.
 }

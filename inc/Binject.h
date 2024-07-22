@@ -37,11 +37,6 @@ class Binject: private Builder
         /// @return False if process failed, else return True.
         bool check(char*** ptr_arg);
 
-        /// @brief Check for output file to redirect parsed flags on it.
-        /// @param ofstr    Output file stream.
-        /// @return False if file was opened and correctly redirected, else return True.
-        bool get_ostr(std::ofstream& ofstr);
-
         /// @brief Build queue of Output objects from provided parameters.
         /// @param ptr  Array of null terminated strings to be built.
         /// @return False if an error occured, else return True.
