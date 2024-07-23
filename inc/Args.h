@@ -24,17 +24,15 @@ struct Args
         /// @return Next argument.
         std::string next();
 
-        /// @brief Check for a number of pending arguments.
-        /// @param d_args   Desired number of arguments.
-        /// @return True if there is, at least, the desired number of arguments, else False.
-        bool have(uint16_t d_args) const;
+        /// @brief Retrieve the current number of pending arguments.
+        /// @return Number of elements within the queue.
+        uint32_t length() const;
 
         /// @brief Is next.
         /// @return True if there is pending arguement.
         bool isn() const;
         
     private:
-        int32_t                 n_args; ///< Total number of arguments, fixed at build time.
         std::queue<std::string> q_args; ///< Queue of arguments as std::string objects.
 
         Args(const Args& orig); ///< = delete
@@ -42,7 +40,6 @@ struct Args
 };
 
 inline Args::Args(int argc, char* argv[]):
-    n_args(argc-1),
     q_args()
 {
     for(int i=1; i<argc; i++)   // build queue for arguments
@@ -66,13 +63,12 @@ inline std::string Args::cunext()
 inline std::string Args::next()
 {
     q_args.pop();
-    n_args--;
     return current();
 }
 
-inline bool Args::have(uint16_t d_args) const
+inline uint32_t Args::length() const
 {
-    return (n_args >= d_args);
+    return q_args.size();
 }
 
 inline bool Args::isn() const
