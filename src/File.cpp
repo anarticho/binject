@@ -25,3 +25,10 @@ bool File::read(const char* fname, string& fdata)
     }
     return ret;
 }
+
+bool File::cdir(const char* dname)
+{
+    std::filesystem::path path(dname);
+    std::error_code ec;
+    return std::filesystem::create_directory(path, ec);
+}

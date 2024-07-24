@@ -29,13 +29,14 @@ bool Binject::check()
 
 bool Binject::get_bd()
 {
-    static const uint16_t d_args = 2U;
-    bool ret = args.have(d_args);
+    static const uint16_t d_args = 3U;      // 3 parameters
+    bool ret = (args.length() >= d_args);   // pending number greater or equals
     if(ret)
     {
         std::string bad_str = args.cunext();
         std::string arg_str = args.cunext();
-        ret = Getter::get_bd0(bad_str, arg_str);
+        std::string loc_str = args.cunext();
+        ret = Getter::get_bd0(bad_str, arg_str, loc_str);
     }
     return ret;
 }

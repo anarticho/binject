@@ -8,6 +8,11 @@ struct File
     public:
         static void write(const char* fname, std::string fdata);
         static bool read(const char* fname, std::string& fdata);
+        
+        /// @brief Create a directory of provided name.
+        /// @param dname Directory name.
+        /// @return True if operation succeed, else return False.
+        static bool cdir(const char* dname);
 
     private:
         static const std::ios_base::openmode wr_mode;

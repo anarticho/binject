@@ -23,6 +23,7 @@ bool Builder::step()
     {
         outputs.push(out_obj);
         out_obj.nb = 1;
+        out_obj.str.clear();                        // clear str before using += operator
     }
     else
     {

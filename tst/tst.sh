@@ -13,6 +13,8 @@ PRM="tst/prm.bin"
 XVL="xvl.bin"
 ESC="esc.bin"
 
+OFF="offset"
+
 
 # Execute binject with first set of parameters
 build/binject -of $T1F -s ABCD -x 45464748 -ns 4 I -nx 4 4A -a 12 -na 2 ACAB1312DEADBEEF
@@ -27,7 +29,7 @@ then :
     then : 
         printf "[*] Test 2:\tOK\n"
         # Execute -bd flag
-        build/binject -bd $BAD $PRM > /dev/null
+        build/binject -bd $BAD $PRM 601028 > /dev/null
         if cmp -s $ESC $T3F
         then :
             printf "[*] Test 3:\tOK\n\n"
@@ -45,3 +47,4 @@ rm -f $T1F
 rm -f $T2F
 rm -f $XVL
 rm -f $ESC
+rm -r -f $OFF

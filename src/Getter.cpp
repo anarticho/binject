@@ -29,7 +29,6 @@ bool Getter::get_x0(const std::string& str, Output& out)
     bool ret = ((str_sz%hex_sz) == 0) && (std::regex_match(str, std::regex(patrn)));
     if(ret)
     {
-        out.str.clear();                        // clear str before using += operator
         for(size_t pos=0; ret && (pos<str_sz); pos+=2)
         {
             try                                 // std::stoi call can throw an exception
@@ -68,11 +67,11 @@ bool Getter::get_of0(const std::string& str, Output& out)
     return ret;
 }
 
-bool Getter::get_bd0(const std::string& bad, const std::string& str)
+bool Getter::get_bd0(const std::string& bad, const std::string& str, const std::string& loc)
 {
     Output bad_bin, str_bin;
-    const bool ret = get_if0(bad, bad_bin)  // load file containing bad characters
-                  && get_if0(str, str_bin)  // load file containing value to XOR
-                  && Badject::build(bad_bin.str, str_bin.str);  // process badchars
+    const bool ret = get_if0(bad, bad_bin)                          // load file containing bad characters
+                  && get_if0(str, str_bin)                          // load file containing value to XOR
+                  && Badject::build(bad_bin.str, str_bin.str, loc); // process badchars
     return ret;
 }

@@ -38,8 +38,9 @@ struct Getter
         /// @brief Check, parse and process -bd flag from provided parameter.
         /// @param bad Name for the file wich contain bad characters.
         /// @param str Name for the file to be XORed.
+        /// @param loc ASCII string for address.
         /// @return False if process failed, else return True.
-        static bool get_bd0(const std::string& bad, const std::string& arg);
+        static bool get_bd0(const std::string& bad, const std::string& arg, const std::string& loc);
 
     private:
         Getter(const Getter& orig); ///< = delete
