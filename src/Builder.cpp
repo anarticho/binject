@@ -1,18 +1,21 @@
 #include <Builder.h>
 
+#include <Flags.h>
+
 Builder::Builder(Args& args0):
     outputs(),
     build_ok(true),
     args(args0),
     out_obj()
 {
-    func_map.insert(std::make_pair("-s",    std::bind(&Builder::get_s, this)));
-    func_map.insert(std::make_pair("-ns",   std::bind(&Builder::get_ns, this)));
-    func_map.insert(std::make_pair("-x",    std::bind(&Builder::get_x, this)));
-    func_map.insert(std::make_pair("-nx",   std::bind(&Builder::get_nx, this)));
-    func_map.insert(std::make_pair("-a",    std::bind(&Builder::get_a, this)));
-    func_map.insert(std::make_pair("-na",   std::bind(&Builder::get_na, this)));
-    func_map.insert(std::make_pair("-if",   std::bind(&Builder::get_if, this)));
+    const Flags::type* flag_it = Flags::get(fmt_str);
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_s, this)));
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_x, this)));
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_a, this)));
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_ns, this)));
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_nx, this)));
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_na, this)));
+    func_map.insert(std::make_pair(*flag_it++,  std::bind(&Builder::get_if, this)));
 }
 
 bool Builder::step()
