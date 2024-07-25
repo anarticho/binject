@@ -27,10 +27,6 @@ struct Args
         /// @brief Retrieve the current number of pending arguments.
         /// @return Number of elements within the queue.
         uint32_t length() const;
-
-        /// @brief Is next.
-        /// @return True if there is pending arguement.
-        bool isn() const;
         
     private:
         std::queue<std::string> q_args; ///< Queue of arguments as std::string objects.
@@ -69,11 +65,6 @@ inline std::string Args::next()
 inline uint32_t Args::length() const
 {
     return q_args.size();
-}
-
-inline bool Args::isn() const
-{
-    return !q_args.empty();
 }
 
 #endif

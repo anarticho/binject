@@ -1,7 +1,14 @@
 #include <Binject.h>
 
+#include <Badchck.h>
+#include <File.h>
 #include <Flags.h>
 #include <Outject.h>
+
+namespace
+{
+    static const uint16_t nb_param_min = 2; // first check for minimum size (flag+data)
+}
 
 Binject::Binject(int argc, char* argv[]):
     Args(argc, argv),
@@ -12,9 +19,8 @@ Binject::Binject(int argc, char* argv[]):
 
 bool Binject::init()
 {
-    static const int min_nb = 2;                    // first check for minimum size (path+flag+data)
     const size_t nb_args = Args::length();  
-    const bool ret = (nb_args>=min_nb) && check();  // then for enhanced flags, and process it if needed
+    const bool ret = (nb_args>=nb_param_min) && check();  // then for enhanced flags, and process it if needed
     while(ret && Builder::step());                  // check and parse format flags, 
                                                     // break at first error OR if no more element to build
     return ret && Builder::build_ok;
@@ -27,10 +33,29 @@ bool Binject::check()
                     std::bind(&Binject::get_of, this)));
     func_map.insert(std::make_pair(*Flags::get(enh_gnbd),       // append bad characters parser
                     std::bind(&Binject::get_bd, this)));
+    func_map.insert(std::make_pair(*Flags::get(enh_ckbd),
+                    std::bind(&Binject::get_cb, this)));
 
     const bool is_flag = (func_map.count(args.current()) != 0); // detect enhanced flag
     const bool ret = is_flag && func_map.at(args.cunext())();   // process if needed, and store result
     return (!is_flag) || ret;   // return true if no flag was detected, else return ret.
+}
+
+bool Binject::get_cb()
+{
+    const std::string bad_str = args.cunext();
+    std::queue<std::string> bin_files;
+    if(Getter::get_if0(bad_str, out_file) && File::binf(bin_files))
+    {
+        Badchck badchk(out_file.str);
+        while (!bin_files.empty())
+        {
+            badchk.check(bin_files.front());
+            bin_files.pop();
+        };
+        
+    }
+    return true;
 }
 
 bool Binject::get_bd()

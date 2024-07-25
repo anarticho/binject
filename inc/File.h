@@ -14,6 +14,15 @@ struct File
         /// @return True if operation succeed, else return False.
         static bool cdir(const char* dname);
 
+        /// @brief Retrieve list of files within provided queue for current directory.
+        /// @param bin_files Reference to the queue to be filled with found binary files.
+        /// @return True if at least one file was found, else return False.
+        static bool binf(std::queue<std::string>& bin_files);
+
+        /// @brief Retrieve NULL terminated ASCII string for binary extension (.bin).
+        /// @return ".bin".
+        static const std::string bin_extension();
+
     private:
         static const std::ios_base::openmode wr_mode;
 

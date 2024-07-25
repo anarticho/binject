@@ -10,12 +10,11 @@ namespace
 
 bool Getter::check_fext(const std::string& str)
 {
-    const std::string bin_str = ".bin";
-
-    const size_t ext_sz = bin_str.length();
+    const size_t ext_sz = File::bin_extension().size();
     const size_t arg_sz = str.size();
 
-    return (arg_sz >= ext_sz) && (bin_str.compare(str.c_str()+arg_sz-ext_sz) == 0);
+    return (arg_sz >= ext_sz) 
+        && (File::bin_extension().compare(str.c_str()+arg_sz-ext_sz) == 0);
 }
 
 bool Getter::get_if0(const std::string& str, Output& out)
@@ -30,7 +29,7 @@ bool Getter::get_x0(const std::string& str, Output& out)
 
     static const size_t hex_sz = 2;
     const size_t str_sz = str.length();
-    for(size_t pos=0; ret && (pos<str_sz); pos+=hex_sz)
+    for(size_t pos=0; ret && (pos<str_sz); pos+=2)
     {
         try                                 // std::stoi call can throw an exception
         {

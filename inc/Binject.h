@@ -23,6 +23,10 @@ class Binject: private Args, private Builder
         /// File for to redirect output content (optionnal, zero-length at build-time).
         Output out_file;
 
+        /// @brief Check for provided chain to detect badcharacters.
+        /// @return Always true.
+        bool get_cb();
+
         /// @brief Check, parse and process -bd flag from provided parameter.
         /// @return False if process failed, else return True.
         bool get_bd();

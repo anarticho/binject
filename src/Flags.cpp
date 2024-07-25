@@ -3,7 +3,7 @@
 const Flags::type* Flags::get(Flag_id id)
 {
     // assume provided id exist within defined below.
-    static const Flags::type flags[nb_flags] = { "-of", "-bd", 
+    static const Flags::type flags[nb_flags] = { "-of", "-bd", "-cb",
                                                  "-s", "-x", "-a", 
                                                  "-ns", "-nx", "-na", 
                                                  "-if"};    

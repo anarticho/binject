@@ -6,8 +6,9 @@
 enum Flag_id    ///< Flags used by binject.
 {
     /// @brief Enhanced flags, shall be the first one.
-    enh_outf = 0,   ///< [file_name], to generate output on file.
+    enh_outf = 0,   ///< [file_name], to generate output on file from format flags.
     enh_gnbd,       ///< [badf_name] [strf_name], to generate XOR, escaped and offset files.
+    enh_ckbd,       ///< No parameter, check for all binary files from execution location.  
 
     /// @brief Format flag, with only one argument [data].
     fmt_str,        ///< [data] as ASCII string.
