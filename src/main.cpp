@@ -8,7 +8,10 @@ int main(int argc, char* argv[])
     //TODO Add -v flag to have std::cout writing log/errors to provided TTY.
 
     Binject binject(argc, argv);
-    binject.step();
+    if(binject.init())
+    {
+        binject.step();
+    }
 
     return 1;     
 }

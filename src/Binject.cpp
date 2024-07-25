@@ -7,11 +7,16 @@ Binject::Binject(int argc, char* argv[]):
     Builder(reinterpret_cast<Args&>(*this)),
     out_file()
 {
-    const int min_nb = 3;                    // first check for minimum size (path+flag+data)
-    const bool ret = (argc>=min_nb) && check(); // then for enhanced flags, and process it if needed
-    
-    // then check and parse format flags
-    while(ret && Builder::step());
+}
+
+bool Binject::init()
+{
+    static const int min_nb = 2;                    // first check for minimum size (path+flag+data)
+    const size_t nb_args = Args::length();  
+    const bool ret = (nb_args>=min_nb) && check();  // then for enhanced flags, and process it if needed
+    while(ret && Builder::step());                  // check and parse format flags, 
+                                                    // break at first error OR if no more element to build
+    return ret && Builder::build_ok;
 }
 
 bool Binject::check()

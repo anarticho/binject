@@ -7,10 +7,14 @@
 class Binject: private Args, private Builder
 {
     public:
-        /// @brief Constructor.
+        /// @brief Default constructor.
         /// @param argc     Total number of arguments (including path, not explicitly inserted).
         /// @param argv     Array of arguments (from main entry point).
         explicit Binject(int argc, char* argv[]);
+
+        /// @brief Initialize by building arguments into Output objects.
+        /// @return False if an error occured, else return True.
+        bool init();
 
         /// @brief Process all the Output objects from queue.
         void step();

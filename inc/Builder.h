@@ -15,6 +15,7 @@ class Builder
     protected:
         typedef std::queue<Output> Outputs; ///< Type definition for vecotr of Output objects.
         Outputs outputs;                    ///< Queue to store Output objects to be processed on step.
+        bool build_ok;                      ///< To False when error at building, else to True.
         Args& args;                         ///< Reference to the Args object, provided at build-time.
         
         /// @brief Default constructor.
@@ -22,7 +23,7 @@ class Builder
         explicit Builder(Args& args0);
 
     private:
-        Output out_obj;     ///< Output object, as cache.
+        Output out_obj; ///< Output object, as cache.
 
         /// Map of functions to process arguments.
         std::map<std::string, std::function<bool ()> > func_map;

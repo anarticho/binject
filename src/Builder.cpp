@@ -2,6 +2,7 @@
 
 Builder::Builder(Args& args0):
     outputs(),
+    build_ok(true),
     args(args0),
     out_obj()
 {
@@ -16,22 +17,19 @@ Builder::Builder(Args& args0):
 
 bool Builder::step()
 {
-    const bool ret = !args.current().empty()                // is not empty
-                && (func_map.count(args.current()) != 0)    // verify flag within map
-                && func_map.at(args.cunext())();            // execute function (and increment pointer)
+    const bool pend = !args.current().empty();  // element pending to build
+
+    // check first flag, then call related function.
+    const bool ret = pend && (func_map.count(args.current()) != 0) && func_map.at(args.cunext())();
     if(ret)
     {
-        outputs.push(out_obj);
-        out_obj.nb = 1;
-        out_obj.str.clear();                        // clear str before using += operator
+        outputs.push(out_obj);  // push built element
+        out_obj.nb = 1;         // release occurences to 1
+        out_obj.str.clear();    // clear working Output object
     }
     else
     {
-        while(args.isn() && !outputs.empty())
-        {
-            args.next();
-            outputs.pop();
-        };
+        build_ok = !pend;   // OK flag to false if error occured at building pending element
     }
     return ret;
 }
