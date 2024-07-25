@@ -3,6 +3,11 @@
 #include <Badject.h>
 #include <File.h>
 
+namespace
+{
+    static const size_t base_hex = 16;
+}
+
 bool Getter::check_fext(const std::string& str)
 {
     const std::string bin_str = ".bin";
@@ -21,25 +26,20 @@ bool Getter::get_if0(const std::string& str, Output& out)
 
 bool Getter::get_x0(const std::string& str, Output& out)
 {
-    static const size_t hex_sz = 2;             // expected size is even (because of hex format)
-    static std::string patrn = "[a-fA-F0-9]+";  // only digits and lower and uppercases from A to f
+    bool ret = true;
 
-    std::string hex_str(str);
-    const size_t str_sz = hex_str.length();     // check provided size is even and matching pattern.
-    bool ret = ((str_sz%hex_sz) == 0) && (std::regex_match(str, std::regex(patrn)));
-    if(ret)
+    static const size_t hex_sz = 2;
+    const size_t str_sz = str.length();
+    for(size_t pos=0; ret && (pos<str_sz); pos+=hex_sz)
     {
-        for(size_t pos=0; ret && (pos<str_sz); pos+=2)
+        try                                 // std::stoi call can throw an exception
         {
-            try                                 // std::stoi call can throw an exception
-            {
-                static const size_t base_hex = 16;
-                out.str += static_cast<char>(std::stoi(hex_str.substr(pos, hex_sz), 0, base_hex));
-            }
-            catch (const std::exception& e)
-            {
-                ret = false;
-            }
+            const char tmp = std::stoi(str.substr(pos, hex_sz), 0, base_hex);
+            out.str += tmp;
+        }
+        catch (const std::exception& e)
+        {
+            ret = false;
         }
     }
     return ret;
@@ -47,16 +47,18 @@ bool Getter::get_x0(const std::string& str, Output& out)
 
 bool Getter::get_a0(const std::string& str, Output& out)
 {
-    const bool ret = Getter::get_x0(str, out)                   // ::get_x increment ptr_arg
-                     && (out.str.length() <= u64_sz8);          // check if fit within x64 address
-    if(ret)
+    bool ret = true;
+    try
     {
-        std::reverse(out.str.begin(), out.str.end());   // set little-endian
-        while(out.str.length() != u64_sz8)              // fill out_obj with 0 for padding
-        {
-            out.str += '\0';
-        }
+        out.str.resize(u64_sz8, '\0');
+        const uint64_t tmp = std::stoull(str, 0, base_hex);
+        std::memcpy(out.str.data(), &tmp, u64_sz8);
     }
+    catch (const std::exception& e)
+    {
+        ret = false;
+    }
+
     return ret;
 }
 

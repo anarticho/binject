@@ -49,8 +49,7 @@ class Badject
         void gen_esc(const std::string& bad_bin, const std::string& str_bin);
 
         /// @brief Generate files containg address of bad characters within memeory.
-        /// @param loc_bin Base address.
-        void gen_off(const std::string& loc_bin);
+        void gen_off();
 
         Badject(const Badject& orig); ///< = delete
         Badject& operator=(const Badject& orig); ///< = delete

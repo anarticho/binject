@@ -16,7 +16,7 @@ bool Badject::build(const std::string& bad_bin,
     {
         bad_obj.gen_xvl();                  // generate XOR value into binary
         bad_obj.gen_esc(bad_bin, str_bin);  // generate escaped binary
-        bad_obj.gen_off(loc_bin);           // generate memory addresses  
+        bad_obj.gen_off();                  // generate memory addresses  
     }
     return ret;
 }
@@ -107,28 +107,28 @@ void Badject::gen_esc(const std::string& bad_bin, const std::string& str_bin)
     Logger::log("esc.bin containing XORed argument.");
 }
 
-void Badject::gen_off(const std::string& loc_bin)
+void Badject::gen_off()
 {
     bool ret = true;
     const char* dname = "offset";
     if(File::cdir(dname))
     {
-        std::cout << "Base address is " << std::hex << maddr << std::endl;
         const size_t queue_sz = offqe.size();
-        for(size_t i=0; i<queue_sz; i++)
+        std::string addr_str(u64_sz8, '\0');
+        for(size_t i=0; i<queue_sz; i++)    // for each element of the queue
         {
+            // compute memory address
             const uint64_t curr_addr = (maddr+offqe.front());
-            std::string addr_str(8, '\0');
             std::memcpy(addr_str.data(), &curr_addr, u64_sz8);
 
-            std::string file_name("offset/off");
+            // create file
+            std::string file_name(std::string(dname)+"/off");
             file_name += std::to_string(i) + ".bin";
             File::write(file_name.c_str(), addr_str);
-            offqe.pop();
 
-            std::string log_str;
-            log_str += file_name + " created.";
-            Logger::log(log_str.c_str());
+            // log prompt
+            Logger::log(std::string(file_name + " created.").c_str());
+            offqe.pop();
         }
     }
     Logger::err("Folder not created.", ret);   
