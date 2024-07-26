@@ -38,17 +38,3 @@ bool File::cdir(const char* dname)
     std::error_code ec;
     return std::filesystem::create_directory(path, ec);
 }
-
-bool File::binf(std::queue<std::string>& bin_files)
-{
-    // Get the current directory
-    std::filesystem::path current_dir = filesystem::current_path();
-    
-    // Iterate over all files in the current directory
-    for (const auto& entry : filesystem::directory_iterator(current_dir)) {
-        if (filesystem::is_regular_file(entry.path()) && (!entry.path().extension().compare(File::bin_extension()))) {
-            bin_files.push(entry.path().filename());
-        }
-    }
-    return !bin_files.empty();
-}

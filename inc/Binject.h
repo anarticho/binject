@@ -24,7 +24,7 @@ class Binject: private Args, private Builder
         Output out_file;
 
         /// @brief Check for provided chain to detect badcharacters.
-        /// @return Always true.
+        /// @return Always false.
         bool get_cb();
 
         /// @brief Check, parse and process -bd flag from provided parameter.

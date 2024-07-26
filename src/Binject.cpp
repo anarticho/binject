@@ -43,19 +43,7 @@ bool Binject::check()
 
 bool Binject::get_cb()
 {
-    const std::string bad_str = args.cunext();
-    std::queue<std::string> bin_files;
-    if(Getter::get_if0(bad_str, out_file) && File::binf(bin_files))
-    {
-        Badchck badchk(out_file.str);
-        while (!bin_files.empty())
-        {
-            badchk.check(bin_files.front());
-            bin_files.pop();
-        };
-        
-    }
-    return true;
+    return false;
 }
 
 bool Binject::get_bd()
