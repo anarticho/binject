@@ -23,6 +23,9 @@ class Binject: private Args, private Builder
         /// File for to redirect output content (optionnal, zero-length at build-time).
         Output out_file;
 
+        /// Queue used at checking bad characters to record flags.
+        std::vector<std::string> bad_flg;
+
         /// @brief Check for provided chain to detect badcharacters.
         /// @return Always false.
         bool get_cb();

@@ -1,8 +1,8 @@
 #include <Binject.h>
 
-#include <Badchck.h>
 #include <File.h>
 #include <Flags.h>
+#include <Logger.h>
 #include <Outject.h>
 
 namespace
@@ -13,7 +13,8 @@ namespace
 Binject::Binject(int argc, char* argv[]):
     Args(argc, argv),
     Builder(reinterpret_cast<Args&>(*this)),
-    out_file()
+    out_file(),
+    bad_flg()
 {
 }
 
@@ -43,7 +44,31 @@ bool Binject::check()
 
 bool Binject::get_cb()
 {
-    return false;
+    const std::string bad_str = args.cunext();
+    // out_file is filled, then shall return false to not being processed as -of file.
+    if(Getter::get_if0(bad_str, out_file))
+    {
+        bool has_finish = false;
+        uint16_t nb_flag = 0;
+        do
+        {
+            has_finish = !Builder::step();
+            if(!has_finish && Builder::build_ok)
+            {
+                bool has_badchar = false;
+                const size_t nb_badchars = out_file.str.length();
+                for(size_t i=0; !has_badchar && (i<nb_badchars); i++)
+                {
+                    has_badchar = (outputs.front().str.find(out_file.str[i]) != std::string::npos);
+                }
+                outputs.pop();
+                std::string log_char("Bad character found at flag #");
+                log_char += std::to_string(nb_flag++);
+                Logger::err(log_char.c_str(), !has_badchar);
+            }
+        } while(!has_finish);
+    }
+    return false;   // return false to avoid ::step call
 }
 
 bool Binject::get_bd()
